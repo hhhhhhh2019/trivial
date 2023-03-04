@@ -121,6 +121,6 @@ class GaulPoly:
 
 
 if __name__ == "__main__":
-	a = GaulPoly([2,1])
+	a = GaulPoly([1,0,3])
 
-	print(a.solve(GaulNum(2)))
+	print(a.solve(GaulNum(4)))

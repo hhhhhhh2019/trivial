@@ -67,8 +67,8 @@ class Matrix:
 
 	def reverse_data(self):
 		if len(self) == 1:
+			self.data[0][0] = GaulNum(1)/self.data[0][0]
 			return
-
 		detA = self.det(self.data, len(self))
 
 		B = [[GaulNum(0) for i in range(len(self))] for j in range(len(self))]
@@ -85,14 +85,52 @@ class Matrix:
 		m.reverse_data()
 		return m
 
+	def col_max(self, data, col, n):
+		max = data[col][col]
+		maxPos = col
+		for i in range(col + 1, n):
+			element = data[i][col]
+			if element.value > max.value:
+				max = element
+				maxPos = i
+		return maxPos
 
-	def chekLinearFunction(self):
-		for k in range(2, len(self.data) + 1):
-			for B in combinations(self.data, k):
-				if sum([GaulNum(sum(i, GaulNum(0)).value % 2) for i in B], GaulNum(0)) == GaulNum(0) or sum(
-						[GaulNum(sum([B[j][i] for j in range(len(B))], GaulNum(0)).value % 2) for i in range(len(B[0]))],
-						GaulNum(0)) == GaulNum(0):
-					return True
+	def triangulation(self, data, n):
+		swapCount = 0
+		if 0 == n:
+			return swapCount
+		num_cols = len(data[0])
+		for i in range(n - 1):
+			imax = self.col_max(data, i, n)
+			if i != imax:
+				data[i], data[imax] = data[imax], data[i]
+				swapCount += 1
+			for j in range(i + 1, n):
+				if data[i][i] != GaulNum(0):
+					mul = data[j][i] / data[i][i]
+					for k in range(i, num_cols):
+						data[j][k] += data[i][k] * mul
+		return data
+
+	def rotate_matr(self, A, size):
+		return [[A[j][i] for j in range(size)] for i in range(size - 1, -1, -1)]
+
+	def linear_check(self):
+		zero = [GaulNum(0)] * len(self)
+		A = [[self.data[i][j] for j in range(len(self))] for i in range(len(self))]
+
+		B = self.triangulation(A, len(self))
+		B1 = self.rotate_matr(B, len(B))
+
+		if zero in B or zero in B1:
+			return True
+
+		B = self.triangulation(self.rotate_matr(A, len(self)), len(self))
+		B1 = self.rotate_matr(B, len(self))
+
+		if zero in B or zero in B1:
+			return True
+
 		return False
 
 

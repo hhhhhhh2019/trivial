@@ -20,6 +20,7 @@ if __name__ == "__main__":
 	c[1] = GaulNum(3)
 	c[3] = GaulNum(2)
 	c[6] = GaulNum(13)
+	#c[0] = GaulNum(1)
 
 	# декодирование и исправление ошибок
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
 		M = Matrix(t, S)
 		V = GaulPoly(S[::-1][t:2*t])
 
-		while M.chekLinearFunction():
+		while M.linear_check():
 			t -= 1
 
 			M = Matrix(t, S)
@@ -60,13 +61,19 @@ if __name__ == "__main__":
 		for i in range(N-K):
 			W[i] = GaulNum(0)
 
+		print(L)
+
+		#L *= GaulPoly([1,0])
+
 		L1 = []
 		for i in range(len(L)):
-			if i&1 == 0:
-				L1.append(L[2-i])
+			if i&1 == len(L)&1:
+				L1.append(L[i])
 			else:
 				L1.append(GaulNum(0))
-		L1 = GaulPoly(L1[::-1])
+		L1 = GaulPoly(L1[:-1])
+
+		print(L1)
 
 		X = []
 		for i in range(1,16):
@@ -76,11 +83,12 @@ if __name__ == "__main__":
 
 		Y = []
 		for i in range(len(X)):
+			#if L1.solve(X[i]).value != 0:
 			Y.append(W.solve(X[i])/L1.solve(X[i]))
 		Y = GaulPoly(Y)
 
 		E = GaulPoly([0] * len(c))
-		for i in range(len(X)):
+		for i in range(len(Y)):
 			pos = GaulNum.log[(GaulNum(1)/X[i]).value]
 			E[-(pos+1)] = Y[i]
 

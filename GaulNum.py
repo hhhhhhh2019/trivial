@@ -8,6 +8,11 @@ class GaulNum:
 		else:
 			raise TypeError("Ожидается число, а получено " + str(type(v)))
 
+	def __eq__(self, other):
+		if not isinstance(other, GaulNum):
+			raise TypeError
+
+		return self.value == other.value
 
 	def __add__(self, other):
 		if not isinstance(other, GaulNum):
