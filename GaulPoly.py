@@ -4,7 +4,11 @@ from operator import add, sub
 
 class GaulPoly:
 	def __init__(self, data):
-		if isinstance(data[0], int):
+		if not isinstance(data, list):
+			raise TypeError
+		elif len(data) == 0:
+			self.data = []
+		elif isinstance(data[0], int):
 			self.data = [GaulNum(i) for i in data]
 		elif isinstance(data[0], GaulNum):
 			self.data = data
@@ -12,7 +16,7 @@ class GaulPoly:
 			raise TypeError
 
 	def __str__(self):
-		return ' '.join([str(i) for i in self.data])
+		return '{' + ' '.join([str(i) for i in self.data]) + '}'
 
 	def __getitem__(self, key):
 		return self.data[key]
@@ -22,7 +26,6 @@ class GaulPoly:
 			raise TypeError
 
 		self.data[key] = value
-
 
 	def __len__(self):
 		return len(self.data)
@@ -129,7 +132,16 @@ class GaulPoly:
 
 
 if __name__ == "__main__":
-	a = GaulPoly([1,1,0,1])
-	b = GaulPoly([0,0,1,1])
+	N = 15
+	K = 9
 
-	print(a//b)
+	g = GaulPoly([1,7,9,3,12,10,12])
+	p = GaulPoly([0,0,0,0,0,0,0,0,1])
+
+	p1 = GaulPoly([*p, *([GaulNum(0)]*(N-K))])
+
+	c = p1 + p1 % g
+
+	c[6] = GaulNum(1)
+
+	print(c % g)
