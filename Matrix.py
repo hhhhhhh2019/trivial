@@ -37,8 +37,8 @@ class Matrix:
 						res.data[i][j] += self.data[i][k] * other.data[k][j]
 			return res
 		elif isinstance(other, GaulPoly):
-			if len(self.data[0]) != len(other):
-				raise Exception('Размеры матриц не соответствуют!')
+			#if len(self.data[0]) != len(other):
+			#	raise Exception('Размеры матриц не соответствуют!')
 
 			res = [GaulNum(0)] * len(other)
 
