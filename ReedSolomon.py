@@ -96,29 +96,23 @@ if __name__ == "__main__":
 	N = 15
 	K = 9
 
-	for _ in range(1000):
-		#p = GaulPoly([0,12,7,3,6,0,6,12,2])
+	for _ in range(100000):
 		p = GaulPoly([randint(0,15) for i in range(K)])
-		#p = GaulPoly([13, 11, 15, 6, 7, 14, 10, 0, 12])
 
 		#print(p)
 
 		encoded = encode(p, N, K)
 
-		for i in range(1):
+		errors = []
+
+		for i in range(0):
 			n,v = randint(0,len(encoded)-1), GaulNum(randint(0,15))
 
 			#print(n,v)
 
+			errors.append([n,v])
+
 			encoded[n] = v
-
-		#encoded[randint(0,len(encoded)-1)] = GaulNum(randint(0,15))
-		#encoded[randint(0,len(encoded)-1)] = GaulNum(randint(0,15))
-		#encoded[randint(0,len(encoded)-1)] = GaulNum(randint(0,15))
-
-		#encoded[0] = GaulNum(0)
-		#encoded[4] = GaulNum(15)
-		#encoded[12] = GaulNum(5)
 
 		decoded = decode(encoded, N, K)
 
@@ -128,4 +122,9 @@ if __name__ == "__main__":
 				ok = False
 				break
 
-		print(ok)
+		if ok == False:
+			print(p)
+			print(errors)
+			print()
+
+		#print(ok)
