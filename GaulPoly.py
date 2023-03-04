@@ -79,12 +79,12 @@ class GaulPoly:
 		a = GaulPoly(self[::])
 		b = other.normalized()
 
-		for i in range(len(a)-1):
+		for i in range(len(a)-len(b)+1):
 			m = a[i] / b[0]
 
 			result.append(m)
 
-			s = GaulPoly([*([j*m for j in b]), *([GaulNum(0)] * (len(b)-i))])
+			s = GaulPoly([*([j*m for j in b]), *([GaulNum(0)] * (len(a)-i-len(b)))])
 
 			a -= s
 
@@ -97,56 +97,30 @@ class GaulPoly:
 		result = []
 
 		a = GaulPoly(self[::])
-		b = other[::]
+		b = other.normalized()
 
-
-		for i in range(len(b)):
-			if b[0].value != 0:
-				break
-
-			b.pop(0)
-
-		b = GaulPoly(b)
-
-
-		for i in range(len(a)-1):
+		for i in range(len(a)-len(b)+1):
 			m = a[i] / b[0]
 
 			result.append(m)
 
-			s = GaulPoly([*([j*m for j in b]), *([GaulNum(0)] * (len(b)-i))])
+			s = GaulPoly([*([j*m for j in b]), *([GaulNum(0)] * (len(a)-i-len(b)))])
 
 			a -= s
 
 		return a.normalized()
 
+	def solve(self, x):
+		result = GaulNum(0)
+
+		for i in range(len(self)):
+			a = x ** (len(self)-i-1) * self.data[i]
+			result += a
+
+		return result
+
 
 if __name__ == "__main__":
-	N = 15
-	K = 9
+	a = GaulPoly([2,1])
 
-	g = GaulPoly([1,7,9,3,12,10,12])
-
-	# кодирование
-
-	p = GaulPoly([0,0,0,0,0,0,0,0,1])
-
-	p1 = GaulPoly([*p, *([GaulNum(0)]*(N-K))])
-
-	c = p1 + p1 % g
-
-	#c[6] = GaulNum(1)
-
-
-	# декодирование и исправление ошибок
-
-	result = GaulPoly([])
-
-	if len(c % g) == 0:
-		print("Ошибок нет")
-		result = GaulPoly(p[0:K])
-	else:
-		pass
-
-
-	print(result[::] == p[::])
+	print(a.solve(GaulNum(2)))

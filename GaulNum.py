@@ -59,6 +59,6 @@ class GaulNum:
 
 if __name__ == "__main__":
 	a = GaulNum(8)
-	b = GaulNum(4)
+	b = a ** -1
 
 	print(a * b)
