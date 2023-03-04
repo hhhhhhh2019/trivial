@@ -31,6 +31,15 @@ class GaulPoly:
 		return len(self.data)
 
 
+	def normalized(self):
+		a = self.data[::]
+		for i in range(len(a)):
+			if a[0].value != 0:
+				break
+			a.pop(0)
+		return GaulPoly(a)
+
+
 	def __add__(self, other):
 		if not isinstance(other, GaulPoly):
 			raise TypeError("Невозможно сложить с " + str(type(other)))
@@ -68,17 +77,7 @@ class GaulPoly:
 		result = []
 
 		a = GaulPoly(self[::])
-		b = other[::]
-
-
-		for i in range(len(b)):
-			if b[0].value != 0:
-				break
-
-			b.pop(0)
-
-		b = GaulPoly(b)
-
+		b = other.normalized()
 
 		for i in range(len(a)-1):
 			m = a[i] / b[0]
@@ -119,16 +118,7 @@ class GaulPoly:
 
 			a -= s
 
-
-		result = a[::]
-
-		for i in range(len(result)):
-			if result[0].value != 0:
-				break
-
-			result.pop(0)
-
-		return GaulPoly(result)
+		return a.normalized()
 
 
 if __name__ == "__main__":
@@ -136,12 +126,27 @@ if __name__ == "__main__":
 	K = 9
 
 	g = GaulPoly([1,7,9,3,12,10,12])
+
+	# кодирование
+
 	p = GaulPoly([0,0,0,0,0,0,0,0,1])
 
 	p1 = GaulPoly([*p, *([GaulNum(0)]*(N-K))])
 
 	c = p1 + p1 % g
 
-	c[6] = GaulNum(1)
+	#c[6] = GaulNum(1)
 
-	print(c % g)
+
+	# декодирование и исправление ошибок
+
+	result = GaulPoly([])
+
+	if len(c % g) == 0:
+		print("Ошибок нет")
+		result = GaulPoly(p[0:K])
+	else:
+		pass
+
+
+	print(result[::] == p[::])

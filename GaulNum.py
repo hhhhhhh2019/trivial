@@ -42,6 +42,16 @@ class GaulNum:
 
 		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] + 15 - GaulNum.log[other.value]) % 15])
 
+	def __pow__(self, power, modulo=None):
+		powe = power
+		if isinstance(power, GaulNum):
+			powe = power.num
+		elif not isinstance(power, int):
+			raise TypeError
+		if self.value == 0:
+			return GaulNum(0)
+		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] * powe) % 15])
+
 
 	def __str__(self):
 		return str(self.value)
