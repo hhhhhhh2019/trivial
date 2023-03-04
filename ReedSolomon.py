@@ -3,35 +3,22 @@ from GaulNum import GaulNum
 from GaulPoly import GaulPoly
 
 
-if __name__ == "__main__":
-	N = 15
-	K = 9
-
+def encode(p, N, K):
 	g = GaulPoly([1,7,9,3,12,10,12])
-
-	# кодирование
-
-	p = GaulPoly([9,1,1,1,9,0,10,5,7])
 
 	p1 = GaulPoly([*p, *([GaulNum(0)]*(N-K))])
 
 	c = p1 + p1 % g
 
-	c[1] = GaulNum(3)
-	c[3] = GaulNum(2)
-	c[6] = GaulNum(13)
-	#c[0] = GaulNum(1)
+	return c
 
-	# декодирование и исправление ошибок
 
-	result = GaulPoly([])
+def decode(c, N, K):
+	g = GaulPoly([1,7,9,3,12,10,12])
 
 	if len(c % g) == 0:
-		print("Ошибок нет")
-		result = GaulPoly(p[0:K])
+		return GaulPoly(p[:K])
 	else:
-		print("Есть ошибки")
-
 		e = c % g
 
 		t = (N-K)//2
@@ -61,10 +48,6 @@ if __name__ == "__main__":
 		for i in range(N-K):
 			W[i] = GaulNum(0)
 
-		print(L)
-
-		#L *= GaulPoly([1,0])
-
 		L1 = []
 		for i in range(len(L)):
 			if i&1 == len(L)&1:
@@ -72,8 +55,6 @@ if __name__ == "__main__":
 			else:
 				L1.append(GaulNum(0))
 		L1 = GaulPoly(L1[:-1])
-
-		print(L1)
 
 		X = []
 		for i in range(1,16):
@@ -94,22 +75,36 @@ if __name__ == "__main__":
 
 		result = GaulPoly((c + E)[:K])
 
-		print("p =", p)
-		print("C =", c)
-		print("e =", e)
-		print("S =", S)
-		print("L =", L)
-		print("W =", W)
-		print("L'=", L1)
-		print("X =", X)
-		print("Y =", Y)
-		print("E =", E)
-		print("C =", result)
+		#print("p =", p)
+		#pprint("C =", c)
+		#pprint("e =", e)
+		#pprint("S =", S)
+		#pprint("L =", L)
+		#pprint("W =", W)
+		#pprint("L'=", L1)
+		#pprint("X =", X)
+		#pprint("Y =", Y)
+		#pprint("E =", E)
+		#pprint("C =", result)
 
+		return result
+
+
+if __name__ == "__main__":
+	N = 15
+	K = 9
+
+	p = GaulPoly([9,1,1,1,9,0,10,5,7])
+
+	encoded = encode(p, N, K)
+
+	encoded[0] = GaulNum(1)
+
+	decoded = decode(encoded, N, K)
 
 	ok = True
 	for i in range(len(p)):
-		if result[i].value != p[i].value:
+		if decoded[i].value != p[i].value:
 			ok = False
 			break
 
