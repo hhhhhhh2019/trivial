@@ -14,17 +14,23 @@ def encode(data):
 	for i in ids:
 		data.insert(i - 1, '0')
 
+	two_check = str(sum([int(i) for i in data]) & 1)
+
 	for i in ids:
 		s = 0
 		for j in range(i-1,len(data),i<<1):
 			s += sum([int(k) for k in data[j:j+i]])
-		data[i-1] = str(s % 2)
+		data[i-1] = str(s & 1)
 
-	return ''.join(data)
+	return (''.join(data)) + two_check
 
 
 def decode(data):
 	data = list(data)
+
+	two_check = int(data[-1])
+
+	data = data[:-1]
 
 	N = 0
 
@@ -41,6 +47,8 @@ def decode(data):
 		party.append(data[i-1])
 		data[i-1] = 0
 
+	two_check = (sum([int(i) for i in data]) & 1) == two_check
+
 	error = 0
 
 	for n,i in enumerate(ids):
@@ -48,10 +56,10 @@ def decode(data):
 		for j in range(i-1,len(data),i<<1):
 			s += sum([int(k) for k in data[j:j+i]])
 
-		if int(party[n]) != s % 2:
+		if int(party[n]) != (s & 1):
 			error += i
 
-	if error not in ids and error < len(data):
+	if error & (error - 1) != 0 and not two_check and error < len(data):
 		data[error - 1] = str(1 - int(data[error - 1]))
 
 	result = ""

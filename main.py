@@ -11,7 +11,7 @@ from random import randint
 GaulNum.log, GaulNum.pow = init_tables(0b10011) # 2**4
 
 N = n - 1
-K = N - 2 * 3 # размер блока(в байтах)
+K = N - 2 * 2 # размер блока(в байтах)
 
 GaulNum.N = N
 
@@ -32,8 +32,6 @@ for _ in range(0,len(data),K*bits):
 
 	p = GaulPoly([int(p[i:i+bits],2) for i in range(0,len(p),bits)])
 
-	#print(p)
-
 	mess = ReedSolomon.encode(p, g, N, K)
 
 	mess = ''.join([bin(i.value)[2:].zfill(bits) for i in mess])
@@ -47,7 +45,7 @@ for _ in range(0,len(data),K*bits):
 
 	mess = list(''.join([bin(i)[2:].zfill(8) for i in mess]))
 
-	for i in range(1):
+	for i in range(2):
 		id = randint(0,len(mess)-1)
 		mess[id] = str(1 - int(mess[id]))
 
@@ -57,13 +55,22 @@ for _ in range(0,len(data),K*bits):
 
 	# приняли
 
-	mess = ''.join([bin(i)[2:].zfill(8) for i in mess])[:60]
+	mess = ''.join([bin(i)[2:].zfill(8) for i in mess])[:68]
 
 	mess = hemming.decode(mess)
 
 
 	mess = GaulPoly([int(mess[i:i+bits],2) for i in range(0,len(mess),bits)])
 
-	#print(ReedSolomon.decode(mess, g, N, K))
+	result = ReedSolomon.decode(mess, g, N, K)
 
-	#print()
+	ok = len(result) == len(p)
+
+	if ok:
+		for i in range(len(p)):
+			if p[i] != result[i]:
+				ok = False
+				break
+
+	if not ok:
+		print("error")
