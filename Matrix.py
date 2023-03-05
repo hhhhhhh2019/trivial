@@ -55,6 +55,8 @@ class Matrix:
 	def det(self, A, size):
 		if size == 1:
 			return A[0][0]
+		elif size == 2:
+			return A[0][0]*A[1][1] - A[1][0]*A[0][1]
 		detA = GaulNum(0)
 		for itr, a in enumerate(A[0]):
 			detA += a * self.det(

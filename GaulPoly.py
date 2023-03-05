@@ -16,7 +16,7 @@ class GaulPoly:
 			raise TypeError
 
 	def __str__(self):
-		return '{' + ' '.join([str(i) for i in self.data]) + '}'
+		return '{' + ','.join([str(i) for i in self.data]) + '}'
 
 	def __getitem__(self, key):
 		return self.data[key]

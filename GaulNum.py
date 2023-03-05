@@ -1,6 +1,8 @@
 class GaulNum:
-	log = [0,0,1,4,2,8,5,10, 3,14, 9,7, 6,13,11,12]
-	pow = [  1,2,4,8,3,6,12,11, 5,10,7,14,15,13, 9]
+	log = []
+	pow = []
+
+	N = 0
 
 	def __init__(self, v):
 		if isinstance(v, int):
@@ -33,7 +35,7 @@ class GaulNum:
 		if self.value == 0 or other.value == 0:
 			return GaulNum(0)
 
-		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] + GaulNum.log[other.value]) % 15])
+		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] + GaulNum.log[other.value]) % GaulNum.N])
 
 	def __truediv__(self, other):
 		if not isinstance(other, GaulNum):
@@ -45,7 +47,7 @@ class GaulNum:
 		if self.value == 0:
 			return GaulNum(0)
 
-		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] + 15 - GaulNum.log[other.value]) % 15])
+		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] + GaulNum.N - GaulNum.log[other.value]) % GaulNum.N])
 
 	def __pow__(self, power, modulo=None):
 		powe = power
@@ -55,7 +57,7 @@ class GaulNum:
 			raise TypeError
 		if self.value == 0:
 			return GaulNum(0)
-		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] * powe) % 15])
+		return GaulNum(GaulNum.pow[(GaulNum.log[self.value] * powe) % GaulNum.N])
 
 
 	def __str__(self):
@@ -63,7 +65,6 @@ class GaulNum:
 
 
 if __name__ == "__main__":
-	a = GaulNum(8)
-	b = a ** -1
+	for i in range(10):
+		print(GaulNum(i)*GaulNum(i))
 
-	print(a * b)

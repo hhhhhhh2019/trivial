@@ -1,12 +1,16 @@
 from Matrix import Matrix
 from GaulNum import GaulNum
 from GaulPoly import GaulPoly
-from random import randint
 
 
-def encode(p, N, K):
-	g = GaulPoly([1,7,9,3,12,10,12])
+def G_polynom_generator(D):
+	G = GaulPoly([GaulNum(1), GaulNum(2)])
+	for itr in range(2, D):
+		G *= GaulPoly([GaulNum(1), GaulNum(2) ** itr])
+	return G
 
+
+def encode(p, g, N, K):
 	p1 = GaulPoly([*p, *([GaulNum(0)]*(N-K))])
 
 	c = p1 + p1 % g
@@ -14,9 +18,7 @@ def encode(p, N, K):
 	return c
 
 
-def decode(c, N, K):
-	g = GaulPoly([1,7,9,3,12,10,12])
-
+def decode(c, g, N, K):
 	if len(c % g) == 0:
 		return GaulPoly(p[:K])
 	else:
@@ -58,15 +60,13 @@ def decode(c, N, K):
 		L1 = GaulPoly(L1[:-1])
 
 		X = []
-		for i in range(1,16):
+		for i in range(1,N+1):
 			if L.solve(GaulNum(i)).value == 0:
 				X.append(GaulNum(i))
 		X = GaulPoly(X)
 
 		Y = []
 		for i in range(len(X)):
-			if L1.solve(X[i]).value == 0:
-				print("Div 0")
 			Y.append(W.solve(X[i])/L1.solve(X[i]))
 		Y = GaulPoly(Y)
 
@@ -93,28 +93,38 @@ def decode(c, N, K):
 
 
 if __name__ == "__main__":
-	N = 15
-	K = 9
+	# незабудте изменть n в файле table_generator.py!
+	n = 1 << 6
 
-	for _ in range(100000):
-		p = GaulPoly([randint(0,15) for i in range(K)])
+	from random import randint
+	from table_generator import init_tables
 
-		#print(p)
+	# порождающий полином тоже надо менять
+	GaulNum.log, GaulNum.pow = init_tables(0b1000011)
 
-		encoded = encode(p, N, K)
+	N = n - 1
+	K = N - 6
+
+	GaulNum.N = N
+
+
+	g = G_polynom_generator(N-K+1)
+
+	for _ in range(1000):
+		p = GaulPoly([randint(0,N) for i in range(K)])
+
+		encoded = encode(p, g, N, K)
 
 		errors = []
 
-		for i in range(0):
-			n,v = randint(0,len(encoded)-1), GaulNum(randint(0,15))
+		for i in range(3):
+			n,v = randint(0,len(encoded)-1), GaulNum(randint(0,N))
 
-			#print(n,v)
-
-			errors.append([n,v])
+			errors.append([n,v.value])
 
 			encoded[n] = v
 
-		decoded = decode(encoded, N, K)
+		decoded = decode(encoded, g, N, K)
 
 		ok = True
 		for i in range(len(p)):
@@ -123,6 +133,7 @@ if __name__ == "__main__":
 				break
 
 		if ok == False:
+			print("error")
 			print(p)
 			print(errors)
 			print()
