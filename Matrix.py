@@ -30,7 +30,7 @@ class Matrix:
 			zip_b = zip(*other.data)
 			# uncomment next line if python 3 :
 			# zip_b = list(zip_b)
-			res = Matrix([GaulNum(0)] * len(self.data[0]) * 2, len(self.data[0]))
+			res = Matrix(len(self), [GaulNum(0)] * len(self.data[0]) * 2)
 			for i in range(0, len(self.data)):
 				for j in range(0, len(other.data[0])):
 					for k in range(0, len(self.data[0])):
@@ -137,9 +137,21 @@ class Matrix:
 
 
 if __name__ == "__main__":
-	a = Matrix(2, [GaulNum(1),GaulNum(2),GaulNum(3),GaulNum(4)])
-	b = a.reversed()
+	from table_generator import init_tables
 
-	print(a)
-	print(b)
-	print(a*b)
+	GaulNum.log, GaulNum.pow = init_tables(0b10011)
+
+	GaulNum.N = (1<<4)-1
+
+
+	for i in range(100000):
+		a = Matrix(3, [0,0,0,0,0,0])
+		a.data = [
+			list(map(GaulNum, [4,7,1])),
+			list(map(GaulNum, [5,3,2])),
+			list(map(GaulNum, [9,8,6]))
+		]
+
+		c = a.reversed()
+
+		#print(a*c)

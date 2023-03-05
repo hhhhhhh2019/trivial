@@ -20,7 +20,7 @@ def encode(p, g, N, K):
 
 def decode(c, g, N, K):
 	if len(c % g) == 0:
-		return GaulPoly(p[:K])
+		return GaulPoly(c[:K])
 	else:
 		e = c % g
 
@@ -34,13 +34,13 @@ def decode(c, g, N, K):
 		S = GaulPoly(S[::-1])
 
 		M = Matrix(t, S)
-		V = GaulPoly(S[::-1][t:2*t])
+		V = GaulPoly(S[::-1][t:t<<1])
 
 		while M.linear_check():
 			t -= 1
 
 			M = Matrix(t, S)
-			V = GaulPoly(S[::-1][t:2*t])
+			V = GaulPoly(S[::-1][t:t<<1])
 
 		M1 = M.reversed()
 
@@ -94,16 +94,16 @@ def decode(c, g, N, K):
 
 if __name__ == "__main__":
 	# незабудте изменть n в файле table_generator.py!
-	n = 1 << 6
+	# n = 1 << 6
 
 	from random import randint
-	from table_generator import init_tables
+	from table_generator import *
 
 	# порождающий полином тоже надо менять
-	GaulNum.log, GaulNum.pow = init_tables(0b1000011)
+	GaulNum.log, GaulNum.pow = init_tables(0b100101)
 
-	N = n - 1
-	K = N - 6
+	N = 31
+	K = N - 2 * 3
 
 	GaulNum.N = N
 

@@ -1,4 +1,5 @@
-n = 2**6
+bits = 4
+n = 1<<bits
 
 gf_exp = [0] * n*2
 gf_log = [0] * n
